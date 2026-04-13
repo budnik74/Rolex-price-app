@@ -1,3 +1,5 @@
+
+
 workflows:
   ios-workflow:
     name: iOS Workflow
@@ -6,6 +8,10 @@ workflows:
       xcode: latest
       node: latest
     scripts:
+      - name: Unzip project
+        script: |
+          unzip rolex-price-app.zip -d extracted
+          cp -r extracted/rolex-price-app/* .
       - name: Install dependencies
         script: npm install
       - name: Build web
@@ -27,4 +33,3 @@ workflows:
             -sdk iphoneos
     artifacts:
       - ios/App/build/**/*.ipa
-
