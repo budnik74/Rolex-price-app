@@ -11,7 +11,6 @@ workflows:
         script: |
           unzip rolex-price-app.zip -d extracted
           cp -r extracted/rolex-price-app/* .
-          ls -la
       - name: Install dependencies
         script: npm install
       - name: Build web
@@ -23,13 +22,11 @@ workflows:
       - name: Copy web assets
         script: npx cap copy ios
       - name: Pod install
-        script: |
-          ls -la ios/App/
-          cd ios/App/App && pod install
+        script: cd ios/App/App && pod install
       - name: Archive iOS
         script: |
           xcodebuild archive
-          -workspace ios/App/App.xcworkspace
+          -workspace ios/App/App/App.xcworkspace
           -scheme App
           -configuration Release
           -sdk iphoneos
