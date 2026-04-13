@@ -23,15 +23,22 @@ workflows:
         script: npx cap copy ios
       - name: Pod install
         script: cd ios/App && pod install
-      - name: Build iOS
+      - name: Archive iOS
         script: |
-          xcodebuild build
+          xcodebuild archive
           -workspace ios/App/App.xcworkspace
           -scheme App
           -configuration Release
           -sdk iphoneos
+          -archivePath $CM_BUILD_DIR/App.xcarchive
           -allowProvisioningUpdates
           CODE_SIGN_STYLE=Automatic
           DEVELOPMENT_TEAM=JK120760533
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive
+          -archivePath $CM_BUILD_DIR/App.xcarchive
+          -exportPath $CM_BUILD_DIR/ipa
+          -exportOptionsPlist ios/App/ExportOptions.plist
     artifacts:
-      - ios/App/build/**/*.ipa
+      - $CM_BUILD_DIR/ipa/*.ipa
