@@ -25,7 +25,7 @@ workflows:
       - name: Pod install
         script: |
           ls -la ios/App/
-          cd ios/App && pod install || cd ios/app && pod install
+          cd ios/App/App && pod install
       - name: Archive iOS
         script: |
           xcodebuild archive
