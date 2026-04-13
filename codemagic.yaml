@@ -1,4 +1,3 @@
-
 workflows:
   ios-workflow:
     name: ios workflow
@@ -15,30 +14,33 @@ workflows:
         script: npm install
       - name: Build web
         script: npm run build
-      - name: Install CocoaPods
-        script: sudo gem install cocoapods
       - name: Add iOS platform
         script: npx cap add ios || true
       - name: Copy web assets
         script: npx cap copy ios
       - name: Pod install
-        script: cd ios/App/App && pod install
+        script: |
+          find . -name "Podfile" 2>/dev/null
+          PODFILE=$(find . -name "Podfile" | head -1)
+          PODDIR=$(dirname $PODFILE)
+          cd $PODDIR && pod install
       - name: Archive iOS
         script: |
-          xcodebuild archive
-          -workspace ios/App/App/App.xcworkspace
-          -scheme App
-          -configuration Release
-          -sdk iphoneos
-          -archivePath $CM_BUILD_DIR/App.xcarchive
-          -allowProvisioningUpdates
-          CODE_SIGN_STYLE=Automatic
-          DEVELOPMENT_TEAM=JK120760533
+          WORKSPACE=$(find . -name "*.xcworkspace" | head -1)
+          xcodebuild archive \
+            -workspace $WORKSPACE \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath $CM_BUILD_DIR/App.xcarchive \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=JK120760533
       - name: Export IPA
         script: |
-          xcodebuild -exportArchive
-          -archivePath $CM_BUILD_DIR/App.xcarchive
-          -exportPath $CM_BUILD_DIR/ipa
-          -exportOptionsPlist ios/App/exportoptions.plist
+          xcodebuild -exportArchive \
+            -archivePath $CM_BUILD_DIR/App.xcarchive \
+            -exportPath $CM_BUILD_DIR/ipa \
+            -exportOptionsPlist $(find . -name "exportoptions.plist" | head -1)
     artifacts:
       - $CM_BUILD_DIR/ipa/*.ipa
