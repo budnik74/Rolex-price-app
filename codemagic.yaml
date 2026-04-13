@@ -1,8 +1,7 @@
 
-
 workflows:
   ios-workflow:
-    name: iOS Workflow
+    name: ios workflow
     instance_type: mac_mini_m2
     environment:
       xcode: latest
@@ -23,19 +22,16 @@ workflows:
       - name: Copy web assets
         script: npx cap copy ios
       - name: Pod install
-        script: cd ios/App && pod install  - 
-        name: Build iOS
+        script: cd ios/App && pod install
+      - name: Build iOS
         script: |
-          xcodebuild build \
-            -workspace ios/App/App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -sdk iphoneos \
-            -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=JK120760533
-
-     e \
-            -sdk iphoneos
+          xcodebuild build
+          -workspace ios/App/App.xcworkspace
+          -scheme App
+          -configuration Release
+          -sdk iphoneos
+          -allowProvisioningUpdates
+          CODE_SIGN_STYLE=Automatic
+          DEVELOPMENT_TEAM=JK120760533
     artifacts:
       - ios/App/build/**/*.ipa
